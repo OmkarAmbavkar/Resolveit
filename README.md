@@ -39,12 +39,15 @@ npm install
 # Create .env file
 touch .env
 
-🧩 Key Endpoints
-Method	 Endpoint	          Description
-POST	  /api/login	        User login
-POST	  /api/cases	        Register a new case
-GET	    /api/cases	        View all cases
-PUT	    /api/cases/:id	    Update case status
-DELETE	/api/cases/:id	    Delete a case
-POST	  /api/notifications	Send case notification
+---
+
+## 🧩 Key Endpoints
+|Method	 | Endpoint	          |Description             |
+|--------|--------------------|------------------------|
+|POST	   |/api/login	        |User login              |
+|POST	   |/api/cases	        |Register a new case     |
+|GET	   |/api/cases	        |View all cases          |
+|PUT	   |/api/cases/:id	    |Update case status      |
+|DELETE	 |/api/cases/:id	    |Delete a case           |
+|POST	   |/api/notifications	|Send case notification  |
 
