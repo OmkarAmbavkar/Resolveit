@@ -1,118 +1,205 @@
 # Resolveit
-This project provides a RESTful API for managing cases, including user authentication, case registration, viewing cases, and notifications.
+## 📚 API Documentation – ResolveIt
 
-🛠️ Tech Stack
-Backend: Node.js + Express
+ResolveIt provides a secure and scalable RESTful API for managing cases, user authentication, and notifications.
 
-Database: MongoDB (Mongoose)
+### 🔗 Live Swagger Docs
 
-Authentication: JWT (JSON Web Tokens)
+You can explore and test the API using Swagger UI:
 
-API Format: JSON
+### 🧩 Swagger Specification (OpenAPI 3.0)
 
-🔐 Authentication
-POST /api/login
-Authenticates a user and returns a JWT token.
+<details>
+  <summary>Click to expand full Swagger YAML</summary>
 
-Request Body:
+```yaml
+openapi: 3.0.0
+info:
+  title: ResolveIt API
+  version: 1.0.0
+  description: API for managing cases, users, and notifications in ResolveIt.
+servers:
+  - url: https://resolveit.example.com
+    description: Production Server
+paths:
+  /api/login:
+    post:
+      summary: User login
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                password:
+                  type: string
+              required:
+                - username
+                - password
+      responses:
+        '200':
+          description: JWT token returned
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
 
-json
-{
-  "username": "omkar",
-  "password": "secure123"
-}
-Response:
+  /api/cases:
+    post:
+      summary: Register a new case
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                description:
+                  type: string
+              required:
+                - title
+                - description
+      responses:
+        '201':
+          description: Case created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  title:
+                    type: string
+                  status:
+                    type: string
+                  createdAt:
+                    type: string
+                    format: date-time
 
-json
-{
-  "token": "your-jwt-token"
-}
-📝 Register Case
-POST /api/cases
-Registers a new case in the system.
+    get:
+      summary: Get all cases
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: List of cases
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                    title:
+                      type: string
+                    status:
+                      type: string
 
-Headers:
+  /api/cases/{id}:
+    put:
+      summary: Update a case
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                status:
+                  type: string
+              required:
+                - status
+      responses:
+        '200':
+          description: Case updated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  status:
+                    type: string
 
-Authorization: Bearer <token>
-Request Body:
+    delete:
+      summary: Delete a case
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Case deleted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
 
-json
-{
-  "title": "Missing Documents",
-  "description": "Client reported missing paperwork."
-}
-Response:
+  /api/notifications:
+    post:
+      summary: Send a notification
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                caseId:
+                  type: string
+                message:
+                  type: string
+              required:
+                - caseId
+                - message
+      responses:
+        '200':
+          description: Notification sent
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                  timestamp:
+                    type: string
+                    format: date-time
 
-json
-{
-  "id": "64c9f1e2a1b2c3d4e5f6g7h8",
-  "title": "Missing Documents",
-  "status": "open",
-  "createdAt": "2025-08-01T12:00:00Z"
-}
-📂 View Cases
-GET /api/cases
-Retrieves a list of all registered cases.
-
-Headers:
-
-Authorization: Bearer <token>
-Response:
-
-json
-[
-  {
-    "id": "64c9f1e2a1b2c3d4e5f6g7h8",
-    "title": "Missing Documents",
-    "status": "open"
-  },
-  {
-    "id": "64c9f1e2a1b2c3d4e5f6g7h9",
-    "title": "Fraud Investigation",
-    "status": "closed"
-  }
-]
-🔔 Notifications (Optional)
-POST /api/notifications
-Sends a notification related to a case.
-
-Request Body:
-
-json
-{
-  "caseId": "64c9f1e2a1b2c3d4e5f6g7h8",
-  "message": "Your case has been updated."
-}
-Response:
-
-json
-{
-  "status": "sent",
-  "timestamp": "2025-08-01T12:30:00Z"
-}
-🧹 Additional Endpoints (Optional)
-PUT /api/cases/:id
-Updates an existing case.
-
-Request Body:
-
-json
-{
-  "status": "closed"
-}
-Response:
-
-json
-{
-  "id": "64c9f1e2a1b2c3d4e5f6g7h8",
-  "status": "closed"
-}
-DELETE /api/cases/:id
-Deletes a case from the system.
-
-Response:
-
-json
-{
-  "message": "Case deleted successfully"
-}
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
